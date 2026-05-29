@@ -1,12 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  browserLocalPersistence,
-  onAuthStateChanged,
-  setPersistence,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { auth as firebaseAuth } from "../../lib/firebase";
-import {
   cloudbaseAuth,
   cloudbaseEnabled,
   cloudbaseSharedEmail,
@@ -49,12 +42,27 @@ export default function PasswordGate({ children }) {
       return undefined;
     }
 
-    const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
-      setSignedIn(Boolean(user));
-      setUserReady(true);
-    });
+    let unsubscribe = () => undefined;
+    let mounted = true;
 
-    return unsubscribe;
+    import("firebase/auth")
+      .then(({ onAuthStateChanged }) => import("../../lib/firebase").then(({ auth }) => ({ auth, onAuthStateChanged })))
+      .then(({ auth, onAuthStateChanged }) => {
+        if (!mounted) return;
+        unsubscribe = onAuthStateChanged(auth, (user) => {
+          setSignedIn(Boolean(user));
+          setUserReady(true);
+        });
+      })
+      .catch(() => {
+        setSignedIn(false);
+        setUserReady(true);
+      });
+
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
   }, []);
 
   async function enterFamilySpace(event) {
@@ -74,8 +82,11 @@ export default function PasswordGate({ children }) {
         if (result?.error) throw result.error;
         setSignedIn(true);
       } else {
-        await setPersistence(firebaseAuth, browserLocalPersistence);
-        await signInWithEmailAndPassword(firebaseAuth, sharedEmail, password);
+        const [{ browserLocalPersistence, setPersistence, signInWithEmailAndPassword }, { auth }] =
+          await Promise.all([import("firebase/auth"), import("../../lib/firebase")]);
+
+        await setPersistence(auth, browserLocalPersistence);
+        await signInWithEmailAndPassword(auth, sharedEmail, password);
       }
 
       setPassword("");
