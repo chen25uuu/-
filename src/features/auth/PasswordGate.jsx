@@ -26,7 +26,8 @@ export default function PasswordGate({ children }) {
           setUserReady(true);
         });
       })
-      .catch(() => {
+      .catch((authError) => {
+        console.error("Firebase auth state failed", authError);
         setSignedIn(false);
         setUserReady(true);
       });
@@ -51,8 +52,9 @@ export default function PasswordGate({ children }) {
       await setPersistence(auth, browserLocalPersistence);
       await signInWithEmailAndPassword(auth, familyEmail, password);
       setPassword("");
-    } catch {
-      setError("密码不正确，请再试一次。");
+    } catch (loginError) {
+      console.error("Firebase sign in failed", loginError);
+      setError(getFriendlyAuthError(loginError));
     } finally {
       setBusy(false);
     }
@@ -110,6 +112,32 @@ export default function PasswordGate({ children }) {
       </form>
     </FullScreenShell>
   );
+}
+
+function getFriendlyAuthError(error) {
+  const code = error?.code || "";
+
+  if (code === "auth/invalid-credential" || code === "auth/wrong-password") {
+    return "密码不正确，请再试一次。";
+  }
+
+  if (code === "auth/user-not-found") {
+    return "Firebase 里没有这个共享账号，请先创建 family@chen.com。";
+  }
+
+  if (code === "auth/network-request-failed") {
+    return "手机网络连接 Firebase 失败。请换 Wi-Fi/流量测试，或确认手机网络能访问 Firebase。";
+  }
+
+  if (code === "auth/operation-not-allowed") {
+    return "Firebase 没有启用邮箱密码登录，请在 Authentication 里开启 Email/Password。";
+  }
+
+  if (code === "auth/unauthorized-domain") {
+    return "当前域名未加入 Firebase 授权域名，请把 leiyuancun.pages.dev 加到 Authorized domains。";
+  }
+
+  return `登录失败：${code || error?.message || "未知错误"}`;
 }
 
 function FullScreenShell({ children }) {
