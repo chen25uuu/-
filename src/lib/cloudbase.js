@@ -10,15 +10,46 @@ export const cloudbaseSharedEmail =
 export const cloudbaseBucket = import.meta.env.VITE_CLOUDBASE_STORAGE_BUCKET || "";
 export const cloudbaseEnabled = Boolean(cloudbaseEnvId);
 
-export const cloudbaseApp = cloudbaseEnabled
-  ? cloudbase.init({
+function createCloudBaseApp() {
+  if (!cloudbaseEnabled) return null;
+
+  try {
+    return cloudbase.init({
       env: cloudbaseEnvId,
       region: cloudbaseRegion,
-    })
-  : null;
+    });
+  } catch (error) {
+    console.error("CloudBase initialization failed", error);
+    return null;
+  }
+}
 
-export const cloudbaseAuth = cloudbaseApp ? cloudbaseApp.auth({ persistence: "local" }) : null;
-export const cloudbaseDb = cloudbaseApp ? cloudbaseApp.database() : null;
+export const cloudbaseApp = createCloudBaseApp();
+
+function createCloudBaseAuth() {
+  if (!cloudbaseApp) return null;
+
+  try {
+    return cloudbaseApp.auth({ persistence: "local" });
+  } catch (error) {
+    console.error("CloudBase auth initialization failed", error);
+    return null;
+  }
+}
+
+function createCloudBaseDb() {
+  if (!cloudbaseApp) return null;
+
+  try {
+    return cloudbaseApp.database();
+  } catch (error) {
+    console.error("CloudBase database initialization failed", error);
+    return null;
+  }
+}
+
+export const cloudbaseAuth = createCloudBaseAuth();
+export const cloudbaseDb = createCloudBaseDb();
 
 export function normalizeCloudDoc(doc) {
   return {
