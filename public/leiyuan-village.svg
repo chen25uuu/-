@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="雷园村入口村景">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#58aef0"/>
+      <stop offset=".6" stop-color="#d7efff"/>
+      <stop offset="1" stop-color="#f7fbff"/>
+    </linearGradient>
+    <linearGradient id="stone" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8f5ef"/>
+      <stop offset="1" stop-color="#c9c0b6"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#sky)"/>
+  <circle cx="1040" cy="120" r="58" fill="#fff" opacity=".48"/>
+  <path d="M0 360 C160 220 275 210 430 360 C570 498 730 455 900 300 C1040 175 1120 220 1200 290 L1200 900 L0 900Z" fill="#3f7754"/>
+  <path d="M0 438 C185 320 360 315 548 455 C720 585 880 545 1200 420 L1200 900 L0 900Z" fill="#5f9364"/>
+  <path d="M0 705 C250 645 455 650 640 705 C820 758 1000 746 1200 700 L1200 900 L0 900Z" fill="#dfe7dc"/>
+  <path d="M250 900 C375 760 515 705 690 685 C850 666 1020 690 1200 790 L1200 900Z" fill="#4f4f50"/>
+  <path d="M360 900 C475 795 600 755 760 742 C920 728 1045 748 1200 830" fill="none" stroke="#f5dc7b" stroke-width="8"/>
+  <g transform="translate(130 235)">
+    <rect x="46" y="180" width="725" height="46" fill="#d7d0c7"/>
+    <rect x="110" y="80" width="590" height="76" fill="#efe9df" stroke="#a69b8e" stroke-width="8"/>
+    <rect x="95" y="156" width="620" height="36" fill="#4d2f25"/>
+    <path d="M70 75 C220 10 535 12 735 72 L715 96 C540 48 240 47 96 98Z" fill="#2b2522"/>
+    <path d="M116 43 C250 0 555 0 690 43 C635 22 172 20 116 43Z" fill="#1f1b18"/>
+    <rect x="150" y="226" width="62" height="350" fill="#e9e1d6"/>
+    <rect x="604" y="226" width="62" height="350" fill="#e9e1d6"/>
+    <rect x="305" y="226" width="72" height="290" fill="#eee8de"/>
+    <rect x="438" y="226" width="72" height="290" fill="#eee8de"/>
+    <g fill="#ce2e25">
+      <circle cx="198" cy="245" r="22"/>
+      <circle cx="330" cy="245" r="22"/>
+      <circle cx="486" cy="245" r="22"/>
+      <circle cx="628" cy="245" r="22"/>
+    </g>
+    <g stroke="#f5c542" stroke-width="4">
+      <line x1="198" y1="267" x2="198" y2="305"/>
+      <line x1="330" y1="267" x2="330" y2="305"/>
+      <line x1="486" y1="267" x2="486" y2="305"/>
+      <line x1="628" y1="267" x2="628" y2="305"/>
+    </g>
+  </g>
+  <g transform="translate(650 505)">
+    <ellipse cx="245" cy="155" rx="315" ry="145" fill="url(#stone)"/>
+    <path d="M52 124 C160 85 242 94 340 45 C419 5 512 58 520 142 C350 98 205 194 52 124Z" fill="#ffffff" opacity=".35"/>
+    <text x="245" y="183" font-family="KaiTi, STKaiti, Microsoft YaHei, serif" text-anchor="middle" fill="#7a541b" font-size="100" font-weight="700">雷园村</text>
+  </g>
+  <g fill="#e14b63">
+    <circle cx="810" cy="782" r="10"/>
+    <circle cx="850" cy="800" r="8"/>
+    <circle cx="913" cy="788" r="9"/>
+    <circle cx="975" cy="805" r="10"/>
+    <circle cx="1040" cy="785" r="8"/>
+  </g>
+</svg>
