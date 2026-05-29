@@ -4,7 +4,9 @@ export const cloudbaseEnvId = import.meta.env.VITE_CLOUDBASE_ENV_ID || "";
 export const cloudbaseRegion = import.meta.env.VITE_CLOUDBASE_REGION || "ap-shanghai";
 export const cloudbaseFamilyId = import.meta.env.VITE_CLOUDBASE_FAMILY_ID || "leiyuan-village";
 export const cloudbaseSharedEmail =
-  import.meta.env.VITE_CLOUDBASE_SHARED_EMAIL || import.meta.env.VITE_FAMILY_SHARED_EMAIL || "";
+  import.meta.env.VITE_CLOUDBASE_SHARED_EMAIL ||
+  import.meta.env.VITE_FAMILY_SHARED_EMAIL ||
+  "leiyuancun@chen.com";
 export const cloudbaseBucket = import.meta.env.VITE_CLOUDBASE_STORAGE_BUCKET || "";
 export const cloudbaseEnabled = Boolean(cloudbaseEnvId);
 
