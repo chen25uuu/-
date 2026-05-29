@@ -2,14 +2,11 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import PasswordGate from "./features/auth/PasswordGate.jsx";
 
-const isCloudflarePages =
-  typeof window !== "undefined" && window.location.hostname.endsWith(".pages.dev");
-const backendProvider =
-  import.meta.env.VITE_BACKEND_PROVIDER || (isCloudflarePages ? "cloudbase" : "");
+const backendProvider = import.meta.env.VITE_BACKEND_PROVIDER || "firebase";
 const RootApp = React.lazy(() =>
-  backendProvider === "cloudbase"
-    ? import("./CloudApp.jsx")
-    : import("./App.jsx")
+  backendProvider === "firebase"
+    ? import("./App.jsx")
+    : import("./CloudApp.jsx")
 );
 
 class RuntimeErrorBoundary extends React.Component {
@@ -34,7 +31,7 @@ class RuntimeErrorBoundary extends React.Component {
             <p className="text-sm font-bold uppercase tracking-[0.22em] text-rosewood">Runtime Error</p>
             <h1 className="mt-3 text-2xl font-bold">页面加载失败</h1>
             <p className="mt-3 text-sm leading-6 text-ink/70">
-              请检查 Cloudflare Pages 的环境变量和 CloudBase 配置。错误信息：
+              请检查 Cloudflare Pages 的环境变量配置。错误信息：
             </p>
             <pre className="mt-4 overflow-auto rounded-lg bg-black/[0.04] p-3 text-xs text-ink/80">
               {this.state.error?.message || "Unknown error"}
