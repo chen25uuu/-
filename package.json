@@ -5,11 +5,11 @@
     "preview": "vite preview --host 0.0.0.0"
   },
   "dependencies": {
+    "@cloudbase/js-sdk": "^3.3.13",
     "@vitejs/plugin-react": "latest",
-    "vite": "latest",
+    "firebase": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "firebase": "latest"
-  },
-  "devDependencies": {}
+    "vite": "latest"
+  }
 }

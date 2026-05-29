@@ -1,13 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   browserLocalPersistence,
   onAuthStateChanged,
   setPersistence,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { auth } from "../../lib/firebase";
+import { auth as firebaseAuth } from "../../lib/firebase";
+import {
+  cloudbaseAuth,
+  cloudbaseEnabled,
+  cloudbaseSharedEmail,
+} from "../../lib/cloudbase";
 
-const sharedEmail = import.meta.env.VITE_FAMILY_SHARED_EMAIL;
+const backendProvider =
+  import.meta.env.VITE_BACKEND_PROVIDER || (cloudbaseEnabled ? "cloudbase" : "firebase");
+const firebaseSharedEmail = import.meta.env.VITE_FAMILY_SHARED_EMAIL || "";
 
 export default function PasswordGate({ children }) {
   const [password, setPassword] = useState("");
@@ -16,8 +23,33 @@ export default function PasswordGate({ children }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
+  const sharedEmail = useMemo(
+    () => (backendProvider === "cloudbase" ? cloudbaseSharedEmail : firebaseSharedEmail),
+    []
+  );
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    if (backendProvider === "cloudbase") {
+      if (!cloudbaseAuth) {
+        setUserReady(true);
+        return undefined;
+      }
+
+      cloudbaseAuth
+        .getLoginState()
+        .then((loginState) => setSignedIn(Boolean(loginState)))
+        .catch(() => setSignedIn(false))
+        .finally(() => setUserReady(true));
+
+      cloudbaseAuth.onLoginStateChanged?.((loginState) => {
+        setSignedIn(Boolean(loginState));
+        setUserReady(true);
+      });
+
+      return undefined;
+    }
+
+    const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
       setSignedIn(Boolean(user));
       setUserReady(true);
     });
@@ -33,8 +65,19 @@ export default function PasswordGate({ children }) {
     setError("");
 
     try {
-      await setPersistence(auth, browserLocalPersistence);
-      await signInWithEmailAndPassword(auth, sharedEmail, password);
+      if (backendProvider === "cloudbase") {
+        const result = await cloudbaseAuth.signInWithEmailAndPassword({
+          email: sharedEmail,
+          password,
+        });
+
+        if (result?.error) throw result.error;
+        setSignedIn(true);
+      } else {
+        await setPersistence(firebaseAuth, browserLocalPersistence);
+        await signInWithEmailAndPassword(firebaseAuth, sharedEmail, password);
+      }
+
       setPassword("");
     } catch {
       setError("密码不正确，请再试一次。");
@@ -82,12 +125,17 @@ export default function PasswordGate({ children }) {
         {error && <p className="mt-3 rounded-lg bg-red-50 p-3 text-sm font-semibold text-red-700">{error}</p>}
         {!sharedEmail && (
           <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm font-semibold text-amber-800">
-            缺少 VITE_FAMILY_SHARED_EMAIL 环境变量。
+            缺少共享账号邮箱环境变量。
+          </p>
+        )}
+        {backendProvider === "cloudbase" && !cloudbaseEnabled && (
+          <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm font-semibold text-amber-800">
+            缺少 VITE_CLOUDBASE_ENV_ID，无法连接腾讯云 CloudBase。
           </p>
         )}
 
         <button
-          disabled={busy || !sharedEmail}
+          disabled={busy || !sharedEmail || (backendProvider === "cloudbase" && !cloudbaseEnabled)}
           className="mt-5 min-h-12 w-full rounded-xl bg-emerald-700 px-4 py-3 text-base font-bold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-slate-300"
         >
           {busy ? "正在进入..." : "进入家族空间"}
