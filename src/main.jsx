@@ -2,7 +2,10 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import PasswordGate from "./features/auth/PasswordGate.jsx";
 
-const backendProvider = import.meta.env.VITE_BACKEND_PROVIDER || "";
+const isCloudflarePages =
+  typeof window !== "undefined" && window.location.hostname.endsWith(".pages.dev");
+const backendProvider =
+  import.meta.env.VITE_BACKEND_PROVIDER || (isCloudflarePages ? "cloudbase" : "");
 const RootApp = React.lazy(() =>
   backendProvider === "cloudbase"
     ? import("./CloudApp.jsx")

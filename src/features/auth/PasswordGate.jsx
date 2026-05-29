@@ -5,8 +5,11 @@ import {
   cloudbaseSharedEmail,
 } from "../../lib/cloudbase";
 
+const isCloudflarePages =
+  typeof window !== "undefined" && window.location.hostname.endsWith(".pages.dev");
 const backendProvider =
-  import.meta.env.VITE_BACKEND_PROVIDER || (cloudbaseEnabled ? "cloudbase" : "firebase");
+  import.meta.env.VITE_BACKEND_PROVIDER ||
+  (cloudbaseEnabled || isCloudflarePages ? "cloudbase" : "firebase");
 const firebaseSharedEmail = import.meta.env.VITE_FAMILY_SHARED_EMAIL || "";
 
 export default function PasswordGate({ children }) {
