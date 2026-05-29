@@ -1,2 +1,5 @@
 name = "leiyuancun"
 pages_build_output_dir = "dist"
+
+[vars]
+VITE_CLOUDBASE_SHARED_EMAIL = "leiyuancun@chen.com"
