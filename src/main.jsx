@@ -1,6 +1,5 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import PasswordGate from "./features/auth/PasswordGate.jsx";
 
 const backendProvider = import.meta.env.VITE_BACKEND_PROVIDER || "firebase";
 const RootApp = React.lazy(() =>
@@ -48,11 +47,9 @@ class RuntimeErrorBoundary extends React.Component {
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <RuntimeErrorBoundary>
-      <PasswordGate>
-        <React.Suspense fallback={<div className="min-h-screen bg-porcelain p-6 text-ink">正在加载...</div>}>
-          <RootApp />
-        </React.Suspense>
-      </PasswordGate>
+      <React.Suspense fallback={<div className="min-h-screen bg-porcelain p-6 text-ink">正在加载...</div>}>
+        <RootApp />
+      </React.Suspense>
     </RuntimeErrorBoundary>
   </React.StrictMode>
 );
